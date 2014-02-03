@@ -1,56 +1,70 @@
 // CLIENT
-var app = {},
+var client = {},
 	moment = require('moment'),
 	net = require('net'),
 	colors = require('colors'),
-	socket = require('json-socket'),
+	jsonSocket = require('json-socket'),
+	host = '192.168.1.3',
+	port = 3000,
+	socket = new jsonSocket(new net.Socket()),
 	fs = require('fs'),
 	util = require('util');
 
-app.filename = 'cap';
+client.filename = 'cap';
 
-app.init = function() {
+client.init = function() {
 	// GREETING
 	console.log('–– ANALI.FY'.rainbow.bold);
 	console.log('––– ..'.rainbow.bold);
 	console.log('–––– loading'.rainbow.bold);
-	console.log('––––– client'.rainbow.bold);
+	console.log('––––– CLIENT'.white.bold.underline);
 	console.log('–––––– tracking you'.rainbow.bold);
 	console.log('––––––– since 2014'.rainbow.bold);
 	console.log('–––––––– thank you'.rainbow.bold);
 	// END OF GREETING
 
-	// app.start();
+	// socket connect
+	socket.connect(port, host);
+	socket.on('connect', function() {
+		console.log('Connected to server ' + host.yellow);
+		// send data
+		socket.sendMessage({
+			time: moment().format('MMMM Do YYYY, h:mm:ss a')
+		});
+	});
+
+	// client.start();
 };
 
-app.start = function() {
+client.start = function() {
+
 	fs.readdir('./cap', function(err, files) {
 		var csvlength = files.toString().match(/csv/g).length;
 		console.log(csvlength);
 		if (err) throw err;
 		if (csvlength <= 9) {
-			app.filePath = './cap/' + app.filename + '-0' + csvlength + '.csv';
-			// console.log('file path: ' + app.filePath);
-			app.processCSV(app.filePath);
+			client.filePath = './cap/' + client.filename + '-0' + csvlength + '.csv';
+			// console.log('file path: ' + client.filePath);
+			client.processCSV(client.filePath);
 		} else {
-			app.filePath = './cap/' + app.filename + '-' + csvlength + '.csv';
-			// console.log('file path: ' + app.filePath);
+			client.filePath = './cap/' + client.filename + '-' + csvlength + '.csv';
+			// console.log('file path: ' + client.filePath);
 			// if(tmpUser.length > 0) { // start watching when has user register
-			app.processCSV(app.filePath);
+			client.processCSV(client.filePath);
 		}
 	});
 };
 
-app.processCSV = function(path) {
+client.processCSV = function(path) {
 	console.log('Monitoring ' + path.green.bold);
 	fs.watchFile(path, function(curr, prev) {
-		fs.readFile(path, function() {
 
-		});
+		// fs.readFile(path, function() {
+		// });
 	});
 };
 
-app.normalize = function() {
+client.normalize = function() {
 
 };
-app.init();
+client.init();
