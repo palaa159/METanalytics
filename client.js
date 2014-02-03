@@ -32,7 +32,6 @@ client.init = function() {
 			time: moment().format('MMMM Do YYYY, h:mm:ss a')
 		});
 	});
-
 	// client.start();
 };
 
@@ -58,7 +57,9 @@ client.start = function() {
 client.processCSV = function(path) {
 	console.log('Monitoring ' + path.green.bold);
 	fs.watchFile(path, function(curr, prev) {
-
+		socket.sendMessage({
+			change: true
+		});
 		// fs.readFile(path, function() {
 		// });
 	});

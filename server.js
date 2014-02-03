@@ -34,7 +34,7 @@ server.start = function() {
 		console.log('A socket has connected');
 		socket = new jsonSocket(socket);
 		socket.on('message', function(data) {
-			console.log(data.time.white.bold);
+			console.log(data);
 		});
 	});
 };
