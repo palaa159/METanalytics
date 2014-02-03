@@ -57,13 +57,26 @@ client.start = function() {
 client.processCSV = function(path) {
 	console.log('Monitoring ' + path.green.bold);
 	fs.watchFile(path, function(curr, prev) {
-		socket.sendMessage({
-			change: true,
-			timestamp: moment().format('h:mm:ss a')
+		fs.readFile(path, function(err, buffer) {
+			var data = buffer.toString();
+			socket.sendMessage({
+				change: true,
+				timestamp: moment().format('h:mm:ss a'),
+				routers: client.countAllRouter(data),
+				devices: client.countAllOnlineDevice(data)
+			});
 		});
-		// fs.readFile(path, function() {
-		// });
 	});
+};
+
+client.countAllRouter = function(data) {
+	var tmp = data.substring(data.indexOf('key') + 5, data.indexOf('ESSIDs') - 5);
+	return tmp.match(/\n/g).length - 2;
+};
+
+client.countAllOnlineDevice = function(data) {
+	var tmp = data.substring(data.indexOf('ESSIDs') + 8, data.length);
+	return tmp.match(/\n/g).length - 1;
 };
 
 client.normalize = function() {
