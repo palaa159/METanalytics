@@ -7,6 +7,8 @@ var app = {},
 	fs = require('fs'),
 	util = require('util');
 
+app.filename = 'cap';
+
 app.init = function() {
 	// GREETING
 	console.log('–– ANALI.FY'.rainbow.bold);
@@ -27,11 +29,11 @@ app.start = function() {
 		console.log(csvlength);
 		if (err) throw err;
 		if (csvlength <= 9) {
-			app.filePath = './cap/' + filename + '-0' + csvlength + '.csv';
+			app.filePath = './cap/' + app.filename + '-0' + csvlength + '.csv';
 			// console.log('file path: ' + app.filePath);
 			app.processCSV(app.filePath);
 		} else {
-			app.filePath = './cap/' + filename + '-' + csvlength + '.csv';
+			app.filePath = './cap/' + app.filename + '-' + csvlength + '.csv';
 			// console.log('file path: ' + app.filePath);
 			// if(tmpUser.length > 0) { // start watching when has user register
 			app.processCSV(app.filePath);
@@ -43,7 +45,7 @@ app.processCSV = function(path) {
 	console.log('Monitoring ' + path.green.bold);
 	fs.watchFile(path, function(curr, prev) {
 		fs.readFile(path, function() {
-			
+
 		});
 	});
 };
