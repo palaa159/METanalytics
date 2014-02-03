@@ -58,7 +58,8 @@ client.processCSV = function(path) {
 	console.log('Monitoring ' + path.green.bold);
 	fs.watchFile(path, function(curr, prev) {
 		socket.sendMessage({
-			change: true
+			change: true,
+			timestamp: moment().format('h:mm:ss a')
 		});
 		// fs.readFile(path, function() {
 		// });
