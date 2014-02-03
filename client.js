@@ -32,7 +32,7 @@ client.init = function() {
 			time: moment().format('MMMM Do YYYY, h:mm:ss a')
 		});
 	});
-	// client.start();
+	client.start();
 };
 
 client.start = function() {
