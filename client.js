@@ -89,8 +89,8 @@ client.deviceData = function(data) {
 		devArray.push({
 			mac: tmpDevArray[i].substring(1),
 			// vendor: ,
-			firstSeen: tmpSeenArray[i*2],
-			lastSeen: tmpSeenArray[i*2 + 1]
+			firstSeen: moment(tmpSeenArray[i*2]).unix(),
+			lastSeen: moment(tmpSeenArray[i*2 + 1]).unix()
 		});
 	}
 	console.log(devArray);
