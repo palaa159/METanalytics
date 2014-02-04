@@ -56,7 +56,15 @@ client.start = function() {
 
 client.processCSV = function(path) {
 	console.log('Monitoring ' + path.green.bold);
-	fs.watchFile(path, function(curr, prev) {
+	// starting clock
+	var clock = setInterval(function() {
+		if (moment().format('ss') == '00') {
+			console.log('tick at 00');
+			sendData();
+		}
+	}, 1000);
+
+	function sendData() {
 		fs.readFile(path, function(err, buffer) {
 			var data = buffer.toString();
 			socket.sendMessage({
@@ -66,7 +74,7 @@ client.processCSV = function(path) {
 				devices: client.countAllOnlineDevice(data)
 			});
 		});
-	});
+	}
 };
 
 client.countAllRouter = function(data) {
