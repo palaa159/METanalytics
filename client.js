@@ -60,10 +60,10 @@ client.processCSV = function(path) {
 	// starting clock
 	var clock = setInterval(function() {
 		if (moment().format('ss') == '00') {
-			console.log('tick at 00');
-			sendData(moment().unix());
+			console.log('sendData at 00');
+			sendData();
 		}
-	}, 500);
+	}, 1000);
 
 	function sendData() {
 		fs.readFile(path, function(err, buffer) {
