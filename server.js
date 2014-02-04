@@ -35,6 +35,7 @@ server.start = function() {
 		socket = new jsonSocket(socket);
 		socket.on('message', function(data) {
 			if(data == 'everyminute') {
+				console.log('tick!'.white);
 				server.process(data.timestamp, data.devArray);
 			}
 		});
