@@ -10,6 +10,7 @@ var client = {},
 	fs = require('fs'),
 	util = require('util');
 
+client.id = 'A001';
 client.filename = 'cap';
 
 client.init = function() {
@@ -68,13 +69,19 @@ client.processCSV = function(path) {
 		fs.readFile(path, function(err, buffer) {
 			var data = buffer.toString();
 			socket.sendMessage({
-				change: true,
+				id: client.id,
 				timestamp: moment().format('h:mm:ss a'),
 				routers: client.countAllRouter(data),
 				devices: client.countAllOnlineDevice(data)
 			});
 		});
 	}
+};
+
+client.deviceData = function(data) {
+	var tmp = data.substring(data.indexOf('ESSIDs') + 8, data.length);
+	var devArray = [];
+	return tmp.match(/\w\w[:]\w\w[:]\w\w[:]\w\w[:]\w\w[:]\w\w/g);
 };
 
 client.countAllRouter = function(data) {
@@ -90,4 +97,5 @@ client.countAllOnlineDevice = function(data) {
 client.normalize = function() {
 
 };
+
 client.init();
