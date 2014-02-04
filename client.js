@@ -63,7 +63,7 @@ client.processCSV = function(path) {
 			console.log('tick at 00');
 			sendData(moment().unix());
 		}
-	}, 1000);
+	}, 500);
 
 	function sendData() {
 		fs.readFile(path, function(err, buffer) {
@@ -80,8 +80,19 @@ client.processCSV = function(path) {
 client.deviceData = function(data, unix) {
 	// check lastseen > unix now - offset
 	var tmp = data.substring(data.indexOf('ESSIDs') + 8, data.length),
-		devArray = tmp.match(/\w\w[:]\w\w[:]\w\w[:]\w\w[:]\w\w[:]\w\w/g), // [^ ] = not space
-		lastSeenArray = tmp.match(/\d+[-]\d+[-]\d+\s\d+[:]\d+[:]\d+/g);
+		tmpDevArray = tmp.match(/[^ ]\w\w[:]\w\w[:]\w\w[:]\w\w[:]\w\w[:]\w\w/g), // [^ ] = not space
+		tmpSeenArray = tmp.match(/\d+[-]\d+[-]\d+\s\d+[:]\d+[:]\d+/g),
+		devArray = [];
+
+	// STRIP each devArray
+	for(var i = 0; i < tmpDevArray.length; i++) {
+		devArray.push({
+			mac: tmpDevArray[i].substring(2),
+			// vendor: ,
+			firstSeen: tmpSeenArray[i*2],
+			lastSeen: tmpSeenArray[i*2 + 1]
+		});
+	}
 	console.log(devArray);
 	console.log(lastSeenArray);
 };
