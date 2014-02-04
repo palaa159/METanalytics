@@ -70,14 +70,14 @@ client.processCSV = function(path) {
 			var data = buffer.toString();
 			socket.sendMessage({
 				id: client.id,
-				timestamp: moment().format('h:mm:ss a'),
+				timestamp: moment().unix(),
 				devArray: client.deviceData(data, moment().unix())
 			});
 		});
 	}
 };
 
-client.deviceData = function(data, unix) {
+client.deviceData = function(data) {
 	// check lastseen > unix now - offset
 	var tmp = data.substring(data.indexOf('ESSIDs') + 8, data.length),
 		tmpDevArray = tmp.match(/[^ ]\w\w[:]\w\w[:]\w\w[:]\w\w[:]\w\w[:]\w\w/g), // [^ ] = not space
@@ -87,14 +87,13 @@ client.deviceData = function(data, unix) {
 	// STRIP each devArray
 	for(var i = 0; i < tmpDevArray.length; i++) {
 		devArray.push({
-			mac: tmpDevArray[i].substring(2),
+			mac: tmpDevArray[i].substring(1),
 			// vendor: ,
 			firstSeen: tmpSeenArray[i*2],
 			lastSeen: tmpSeenArray[i*2 + 1]
 		});
 	}
 	console.log(devArray);
-	console.log(lastSeenArray);
 };
 
 client.countAllRouter = function(data) {
