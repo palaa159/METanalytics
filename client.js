@@ -71,8 +71,7 @@ client.processCSV = function(path) {
 			socket.sendMessage({
 				id: client.id,
 				timestamp: moment().format('h:mm:ss a'),
-				routers: client.countAllRouter(data),
-				devices: client.countAllOnlineDevice(data)
+				devArray: client.deviceData(data)
 			});
 		});
 	}
