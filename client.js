@@ -69,9 +69,10 @@ client.processCSV = function(path) {
 		fs.readFile(path, function(err, buffer) {
 			var data = buffer.toString();
 			socket.sendMessage({
+				command: 'everyminute',
 				id: client.id,
 				timestamp: moment().unix(),
-				devArray: client.deviceData(data, moment().unix())
+				devArray: client.deviceData(data)
 			});
 		});
 	}
@@ -88,12 +89,16 @@ client.deviceData = function(data) {
 	for(var i = 0; i < tmpDevArray.length; i++) {
 		devArray.push({
 			mac: tmpDevArray[i].substring(1),
-			// vendor: ,
+			vendor: client.macToVendor(tmpDevArray[i].substring(1)),
 			firstSeen: moment(tmpSeenArray[i*2]).unix(),
 			lastSeen: moment(tmpSeenArray[i*2 + 1]).unix()
 		});
 	}
-	console.log(devArray);
+	return devArray;
+};
+
+client.macToVendor = function(mac) {
+	return true;
 };
 
 client.countAllRouter = function(data) {

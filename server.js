@@ -34,9 +34,24 @@ server.start = function() {
 		console.log('A socket has connected');
 		socket = new jsonSocket(socket);
 		socket.on('message', function(data) {
-			console.log(data);
+			if(data == 'everyminute') {
+				server.process(data.timestamp, data.devArray);
+			}
 		});
 	});
+};
+
+server.process = function(time, devarray) {
+	var devArray = [];
+	devarray.forEach(function(v) {
+		if(v.lastSeen + 60 + 10 >= time) {
+			devArray.push({
+				mac: v.mac,
+				lastSeen: v.lastSeen
+			});
+		}
+	});
+	console.log(devArray);
 };
 
 server.init();
