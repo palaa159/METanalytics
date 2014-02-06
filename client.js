@@ -61,11 +61,11 @@ client.processCSV = function(path) {
 	var clock = setInterval(function() {
 		if (moment().format('ss') == '00') {
 			console.log('sendData at 00');
-			sendData();
+			sendData(path);
 		}
 	}, 1000);
 
-	function sendData() {
+	function sendData(path) {
 		fs.readFile(path, function(err, buffer) {
 			var data = buffer.toString();
 			socket.sendMessage({

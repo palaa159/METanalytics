@@ -34,10 +34,10 @@ server.start = function() {
 		console.log('A socket has connected');
 		socket = new jsonSocket(socket);
 		socket.on('message', function(data) {
-			// if(data.command === 'everyminute') {
+			if(data.command === 'everyminute') {
 				console.log('tick! from '.white + data.id);
 				server.process(data.timestamp, data.devArray);
-			// }
+			}
 		});
 	});
 };
