@@ -11,7 +11,7 @@ var client = {},
 	util = require('util');
 
 client.id = 'A001';
-client.filename = 'cap';
+client.filename = 'test';
 
 client.init = function() {
 	// GREETING
@@ -61,11 +61,11 @@ client.processCSV = function(path) {
 	var clock = setInterval(function() {
 		if (moment().format('ss') == '00') {
 			console.log('sendData at 00');
-			sendData(path);
+			sendData();
 		}
 	}, 1000);
 
-	function sendData(path) {
+	function sendData() {
 		fs.readFile(path, function(err, buffer) {
 			var data = buffer.toString();
 			socket.sendMessage({
