@@ -5,7 +5,7 @@ var server = {},
 	net = require('net'),
 	colors = require('colors'),
 	jsonSocket = require('json-socket'),
-	port = 3000,
+	port = 80,
 	server = net.createServer(),
 	fs = require('fs'),
 	util = require('util');
@@ -76,11 +76,11 @@ app.get(/^(.+)$/, function(req, res) {
 });
 
 // SOCKET.IO
-var io = require('socket.io').listen(app.listen(webPort, function() {
-	u.log(('Express listening on ' + webPort).green);
-}), {
-	log: false
-});
+// var io = require('socket.io').listen(app.listen(webPort, function() {
+// 	u.log(('Express listening on ' + webPort).green);
+// }), {
+// 	log: false
+// });
 
 io.sockets.on('connection', function() {
 	u.log('hello client');
