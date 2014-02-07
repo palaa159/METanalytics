@@ -82,9 +82,9 @@ app.get(/^(.+)$/, function(req, res) {
 // 	log: false
 // });
 
-io.sockets.on('connection', function() {
-	u.log('hello client');
-});
+// io.sockets.on('connection', function() {
+// 	u.log('hello client');
+// });
 
 // MONGO driver by Mongoose
 var Mongoose = require('mongoose'),
