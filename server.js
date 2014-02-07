@@ -5,7 +5,7 @@ var server = {},
 	net = require('net'),
 	colors = require('colors'),
 	jsonSocket = require('json-socket'),
-	port = 3000,
+	port = 80,
 	server = net.createServer(),
 	fs = require('fs'),
 	util = require('util');
@@ -58,7 +58,7 @@ server.process = function(time, devarray) {
 //==================================
 //
 // MISC
-// EXPRESS
+// EXPRESS, SOCKET.IO, MONGOOSE
 //
 //==================================
 var express = require('express'),
@@ -88,10 +88,23 @@ io.sockets.on('connection', function() {
 
 // MONGO driver by Mongoose
 var Mongoose = require('mongoose'),
+	opts = { server: { auto_reconnect: true }, user: 'root', pass: 'bitnami' };
+
+server.connectDb = function() {
 	db = Mongoose.createConnection('mongodb:///opt/bitnami/mongodb/tmp/mongodb-27017.sock/met');
+};
+
+//==================================
+//
+// PCAP
+// FOR DEVICE REGISTRATION
+//
+//==================================
+
 
 
 // =======================
 // INITIALIZE
 // =======================
+// server.connectDb();
 server.init();
