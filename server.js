@@ -88,7 +88,7 @@ io.sockets.on('connection', function() {
 
 // MONGO driver by Mongoose
 var Mongoose = require('mongoose'),
-	db = Mongoose.createConnection('mongodb://USER:PASSWORD@localhost/DATABASE');
+	db = Mongoose.createConnection('mongodb:///opt/bitnami/mongodb/tmp/mongodb-27017.sock/met');
 
 
 // =======================
