@@ -5,7 +5,7 @@ var server = {},
 	net = require('net'),
 	colors = require('colors'),
 	jsonSocket = require('json-socket'),
-	port = 80,
+	port = 8080,
 	server = net.createServer(),
 	fs = require('fs'),
 	util = require('util');
@@ -65,7 +65,7 @@ var express = require('express'),
 	app = express(),
 	http = require('http'),
 	httpServer = http.createServer(app), // bc of socket.io
-	webPort = 5000;
+	webPort = 80;
 
 // app.use(express.logger());
 app.use(express.static(__dirname + '/public'));
@@ -76,15 +76,15 @@ app.get(/^(.+)$/, function(req, res) {
 });
 
 // SOCKET.IO
-// var io = require('socket.io').listen(app.listen(webPort, function() {
-// 	u.log(('Express listening on ' + webPort).green);
-// }), {
-// 	log: false
-// });
+var io = require('socket.io').listen(app.listen(webPort, function() {
+	u.log(('Express listening on ' + webPort).green);
+}), {
+	log: false
+});
 
-// io.sockets.on('connection', function() {
-// 	u.log('hello client');
-// });
+io.sockets.on('connection', function() {
+	u.log('hello client');
+});
 
 // MONGO driver by Mongoose
 var Mongoose = require('mongoose'),
