@@ -1,5 +1,6 @@
 // SERVER
 var server = {},
+	u = require('util'),
 	moment = require('moment'),
 	net = require('net'),
 	colors = require('colors'),
@@ -11,13 +12,13 @@ var server = {},
 
 server.init = function() {
 	// GREETING
-	console.log('–– ANALI.FY'.rainbow.bold);
-	console.log('––– ..'.rainbow.bold);
-	console.log('–––– loading'.rainbow.bold);
-	console.log('––––– SERVER'.white.bold.underline);
-	console.log('–––––– tracking you'.rainbow.bold);
-	console.log('––––––– since 2014'.rainbow.bold);
-	console.log('–––––––– thank you'.rainbow.bold);
+	u.log('–– ANALI.FY'.rainbow.bold);
+	u.log('––– ..'.rainbow.bold);
+	u.log('–––– loading'.rainbow.bold);
+	u.log('––––– SERVER'.white.bold.underline);
+	u.log('–––––– tracking you'.rainbow.bold);
+	u.log('––––––– since 2014'.rainbow.bold);
+	u.log('–––––––– thank you'.rainbow.bold);
 	// END OF GREETING
 
 	server.start();
@@ -25,17 +26,17 @@ server.init = function() {
 
 server.start = function() {
 	server.listen(port);
-	console.log('@@@@@@@@@@@@@@@@@@@@'.yellow);
-	console.log('@ SERVER LISTENING @'.yellow);
-	console.log('@   ON PORT '.yellow + port + '   @'.yellow);
-	console.log('@@@@@@@@@@@@@@@@@@@@'.yellow);
+	u.log('@@@@@@@@@@@@@@@@@@@@'.yellow);
+	u.log('@ SERVER LISTENING @'.yellow);
+	u.log('@   ON PORT '.yellow + port + '   @'.yellow);
+	u.log('@@@@@@@@@@@@@@@@@@@@'.yellow);
 
 	server.on('connection', function(socket) {
-		console.log('A socket has connected');
+		u.log('A socket has connected');
 		socket = new jsonSocket(socket);
 		socket.on('message', function(data) {
 			if(data.command === 'everyminute') {
-				console.log('tick! from '.white + data.id);
+				u.log('tick! from '.white + data.id);
 				server.process(data.timestamp, data.devArray);
 			}
 		});
@@ -52,7 +53,40 @@ server.process = function(time, devarray) {
 			});
 		}
 	});
-	console.log(devArray);
+	u.log(devArray);
 };
+//==================================
+//
+// MISC
+// EXPRESS
+//
+//==================================
+var express = require('express'),
+	app = express(),
+	http = require('http'),
+	httpServer = http.createServer(app), // bc of socket.io
+	webPort = 5000;
 
+// app.use(express.logger());
+app.use(express.static(__dirname + '/public'));
+
+app.get(/^(.+)$/, function(req, res) {
+	u.log(('static file request : ' + req.params).yellow);
+	res.sendfile(req.params[0]);
+});
+
+// SOCKET.IO
+var io = require('socket.io').listen(app.listen(webPort, function() {
+	u.log(('Express listening on ' + webPort).green);
+}), {
+	log: false
+});
+
+io.sockets.on('connection', function() {
+	u.log('hello client');
+});
+
+// =======================
+// INITIALIZE
+// =======================
 server.init();
