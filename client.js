@@ -10,9 +10,19 @@ var client = {},
 	fs = require('fs'),
 	util = require('util');
 
+// socket global listener
+	// error handling
+	socket.on('error', function(err) {
+		// console.log(err);
+		if(err.code == 'ECONNREFUSED')
+			console.log(('Attempting to connect to ' + host + ' port ' + port).red);
+			setTimeout(function() {
+				socket.connect(port, host);
+			}, 5000);
+	});
+
 client.id = 'A001';
 client.filename = 'test';
-
 client.init = function() {
 	// GREETING
 	console.log('–– ANALI.FY'.rainbow.bold);
@@ -26,15 +36,7 @@ client.init = function() {
 
 	// socket connect
 	socket.connect(port, host);
-	// error handling
-	socket.on('error', function(err) {
-		// console.log(err);
-		if(err.code == 'ECONNREFUSED')
-			console.log(('Attempting to connect to ' + host + ' port ' + port).red);
-			setTimeout(function() {
-				socket.connect(port, host);
-			}, 5000);
-	});
+
 	socket.on('connect', function() {
 		console.log('Connected to server ' + host.yellow);
 		// send data
@@ -69,7 +71,7 @@ client.processCSV = function(path) {
 	// starting clock
 	var clock = setInterval(function() {
 		if (moment().format('ss') == '00') {
-			console.log('sendData at 00');
+			console.log('sendData at ' + moment().format('h:mm:ss a'));
 			sendData();
 		}
 	}, 1000);
@@ -77,11 +79,13 @@ client.processCSV = function(path) {
 	function sendData() {
 		fs.readFile(path, function(err, buffer) {
 			var data = buffer.toString();
-			socket.sendMessage({
+			socket.on('connect', function() {
+				socket.sendMessage({
 				command: 'everyminute',
 				id: client.id,
 				timestamp: moment().unix(),
 				devArray: client.deviceData(data)
+			});	
 			});
 		});
 	}
