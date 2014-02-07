@@ -65,7 +65,7 @@ var express = require('express'),
 	app = express(),
 	http = require('http'),
 	httpServer = http.createServer(app), // bc of socket.io
-	webPort = 80;
+	webPort = 5000;
 
 // app.use(express.logger());
 app.use(express.static(__dirname + '/public'));
