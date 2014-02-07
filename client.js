@@ -51,17 +51,17 @@ client.init = function() {
 };
 
 client.start = function() {
-
+	
 	fs.readdir('/home/pi/METanalytics/cap', function(err, files) {
 		var csvlength = files.toString().match(/csv/g).length;
 		console.log(csvlength);
 		if (err) throw err;
 		if (csvlength <= 9) {
-			client.filePath = './cap/' + client.filename + '-0' + csvlength + '.csv';
+			client.filePath = '/home/pi/METanalytics/cap/' + client.filename + '-0' + csvlength + '.csv';
 			console.log('file path: ' + client.filePath);
 			client.processCSV(client.filePath);
 		} else {
-			client.filePath = './cap/' + client.filename + '-' + csvlength + '.csv';
+			client.filePath = '/home/pi/METanalytics/cap/' + client.filename + '-' + csvlength + '.csv';
 			console.log('file path: ' + client.filePath);
 			// if(tmpUser.length > 0) { // start watching when has user register
 			client.processCSV(client.filePath);
