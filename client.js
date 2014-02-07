@@ -79,13 +79,11 @@ client.processCSV = function(path) {
 	function sendData() {
 		fs.readFile(path, function(err, buffer) {
 			var data = buffer.toString();
-			socket.on('connect', function() {
-				socket.sendMessage({
+			socket.sendMessage({
 				command: 'everyminute',
 				id: client.id,
 				timestamp: moment().unix(),
 				devArray: client.deviceData(data)
-			});	
 			});
 		});
 	}
