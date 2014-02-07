@@ -90,7 +90,7 @@ io.sockets.on('connection', function() {
 var MongoClient = require('mongodb').MongoClient,
 	format = require('util').format;
 
-MongoClient.connect('/opt/bitnami/mongodb/tmp/mongodb-27017.sock:27017/test', function(err, db) {
+MongoClient.connect('mongodb://54.80.86.109:27017/test', function(err, db) {
 	if (err) throw err;
 
 	var collection = db.collection('test_insert');
