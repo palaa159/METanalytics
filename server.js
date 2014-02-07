@@ -35,7 +35,7 @@ server.start = function() {
 		u.log('A socket has connected');
 		socket = new jsonSocket(socket);
 		socket.on('message', function(data) {
-			if(data.command === 'everyminute') {
+			if (data.command === 'everyminute') {
 				u.log('tick! from '.white + data.id);
 				server.process(data.timestamp, data.devArray);
 			}
@@ -46,7 +46,7 @@ server.start = function() {
 server.process = function(time, devarray) {
 	var devArray = [];
 	devarray.forEach(function(v) {
-		if(v.lastSeen + 60 + 10 >= time) {
+		if (v.lastSeen + 60 + 10 >= time) {
 			devArray.push({
 				mac: v.mac,
 				lastSeen: v.lastSeen
@@ -84,6 +84,30 @@ var io = require('socket.io').listen(app.listen(webPort, function() {
 
 io.sockets.on('connection', function() {
 	u.log('hello client');
+});
+
+// MONGO
+var MongoClient = require('mongodb').MongoClient;
+
+MongoClient.connect('mongodb://127.0.0.1:27017/test', function(err, db) {
+	if (err) throw err;
+
+	var collection = db.collection('test_insert');
+	collection.insert({
+		a: 2
+	}, function(err, docs) {
+
+		collection.count(function(err, count) {
+			console.log(format("count = %s", count));
+		});
+
+		// Locate all the entries using find
+		collection.find().toArray(function(err, results) {
+			console.dir(results);
+			// Let's close the db
+			db.close();
+		});
+	});
 });
 
 // =======================
