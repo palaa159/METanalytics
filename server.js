@@ -37,7 +37,8 @@ server.start = function() {
 		socket.on('message', function(data) {
 			if (data.command === 'everyminute') {
 				u.log('tick! from '.white + data.id);
-				server.process(data.timestamp, data.devArray);
+				// server.process(data.timestamp, data.devArray);
+				that.emit('minute', data);
 			}
 		});
 	});
@@ -82,7 +83,10 @@ var io = require('socket.io').listen(app.listen(webPort, function() {
 	log: false
 });
 
-io.sockets.on('connection', function() {
+var that;
+
+io.sockets.on('connection', function(socket) {
+	that = socket;
 	u.log('hello client');
 });
 
