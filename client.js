@@ -26,14 +26,23 @@ client.init = function() {
 
 	// socket connect
 	socket.connect(port, host);
+	// error handling
+	socket.on('error', function(err) {
+		// console.log(err);
+		if(err.code == 'ECONNREFUSED')
+			console.log(('Attempting to connect to ' + host + ' port ' + port).red);
+			setTimeout(function() {
+				socket.connect(port, host);
+			}, 5000);
+	});
 	socket.on('connect', function() {
 		console.log('Connected to server ' + host.yellow);
 		// send data
 		socket.sendMessage({
 			time: moment().format('MMMM Do YYYY, h:mm:ss a')
 		});
+		client.start();
 	});
-	client.start();
 };
 
 client.start = function() {
