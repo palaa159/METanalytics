@@ -5,7 +5,7 @@ var client = {},
 	colors = require('colors'),
 	jsonSocket = require('json-socket'),
 	host = '54.80.167.108',
-	port = 443,
+	port = 80,
 	socket = new jsonSocket(new net.Socket()),
 	fs = require('fs'),
 	util = require('util');
@@ -43,7 +43,10 @@ client.init = function() {
 		socket.sendMessage({
 			time: moment().format('MMMM Do YYYY, h:mm:ss a')
 		});
-		client.start();
+		console.log('Wait for airodump-ng to start');
+		setTimeout(function() {
+			client.start();
+		}, 3000 * 10);
 	});
 };
 
