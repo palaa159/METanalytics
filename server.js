@@ -5,7 +5,7 @@ var server = {},
 	net = require('net'),
 	colors = require('colors'),
 	jsonSocket = require('json-socket'),
-	port = 8080,
+	port = 80,
 	server = net.createServer(),
 	fs = require('fs'),
 	util = require('util');
@@ -66,7 +66,7 @@ var express = require('express'),
 	app = express(),
 	http = require('http'),
 	httpServer = http.createServer(app), // bc of socket.io
-	webPort = 80;
+	webPort = 8080;
 
 // app.use(express.logger());
 app.use(express.static(__dirname + '/public'));
