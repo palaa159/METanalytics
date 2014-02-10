@@ -52,7 +52,7 @@ client.init = function() {
 
 client.start = function() {
 
-	fs.readdir('./cap', function(err, files) {
+	fs.readdir('/home/pi/METanalytics/cap', function(err, files) {
 		var csvlength = files.toString().match(/csv/g).length;
 		console.log(csvlength);
 		if (err) throw err;
