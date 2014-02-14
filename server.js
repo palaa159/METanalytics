@@ -37,8 +37,8 @@ server.start = function() {
 		socket.on('message', function(data) {
 			if (data.command === 'everyminute') {
 				u.log('tick! from '.white + data.id);
-				// server.process(data.timestamp, data.devArray);
-				that.emit('minute', data);
+				server.process(data.timestamp, data.devArray);
+				// that.emit('minute', data);
 			}
 		});
 	});
@@ -54,6 +54,8 @@ server.process = function(time, devarray) {
 			});
 		}
 	});
+	that.emit('minute', data);
+	u.log('AT : ' + moment(time).format('h:mm a'));
 	u.log(devArray);
 };
 //==================================
