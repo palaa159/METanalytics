@@ -8,6 +8,7 @@ var net = require('net'),
 	raspi = {},
 	dns = require('dns'),
 	dnsCheck,
+	color = require('colors'),
 	fs = require('fs');
 
 // check internet connection every 1 minute
