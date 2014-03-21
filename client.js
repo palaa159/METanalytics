@@ -25,7 +25,7 @@ raspi.connect = function() {
 raspi.reconnect = function() {
 	timeout = setInterval(function() {
 		raspi.connect();
-	}, 10 * 1000);
+	}, 2 * 60 * 1000);
 };
 
 raspi.start = function() {
