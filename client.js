@@ -17,6 +17,7 @@ raspi.id = 'METLab';
 raspi.filename = 'test';
 
 raspi.connect = function() {
+	socket.end();
 	console.log('connecting to ' + host + ':' + port);
 	socket.connect(port, host);
 };
