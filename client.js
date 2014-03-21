@@ -1,75 +1,51 @@
-// CLIENT
-var client = {},
+var net = require('net'),
 	moment = require('moment'),
-	net = require('net'),
-	colors = require('colors'),
 	jsonSocket = require('json-socket'),
-	host = '54.198.227.28',
-	port = 80,
+	host = '54.83.34.151',
+	port = 443,
 	socket = new jsonSocket(new net.Socket()),
-	fs = require('fs'),
-	util = require('util');
+	timeout,
+	raspi = {},
+	dns = require('dns'),
+	dnsCheck,
+	fs = require('fs');
 
-// socket global listener
-	// error handling
-	socket.on('error', function(err) {
-		// console.log(err);
-		if(err.code == 'ECONNREFUSED')
-			console.log(('Attempting to connect to ' + host + ' port ' + port).red);
-			setTimeout(function() {
-				socket.connect(port, host);
-			}, 5000);
-	});
+// check internet connection every 1 minute
 
-client.id = 'A001';
-client.filename = 'test';
-client.init = function() {
-	// GREETING
-	console.log('–– ANALI.FY'.rainbow.bold);
-	console.log('––– ..'.rainbow.bold);
-	console.log('–––– loading'.rainbow.bold);
-	console.log('––––– CLIENT'.white.bold.underline);
-	console.log('–––––– tracking you'.rainbow.bold);
-	console.log('––––––– since 2014'.rainbow.bold);
-	console.log('–––––––– thank you'.rainbow.bold);
-	// END OF GREETING
+raspi.id = 'METLab';
+raspi.filename = 'test';
 
-	// socket connect
+raspi.connect = function() {
+	console.log('connecting to ' + host + ':' + port);
 	socket.connect(port, host);
-
-	socket.on('connect', function() {
-		console.log('Connected to server ' + host.yellow);
-		// send data
-		socket.sendMessage({
-			time: moment().format('MMMM Do YYYY, h:mm:ss a')
-		});
-		console.log('Wait for airodump-ng to start');
-		setTimeout(function() {
-			client.start();
-		}, 3000 * 10);
-	});
 };
 
-client.start = function() {
-	
+raspi.reconnect = function() {
+	timeout = setInterval(function() {
+		raspi.connect();
+	}, 10 * 1000);
+};
+
+raspi.start = function() {
+
 	fs.readdir('/home/pi/METanalytics/cap', function(err, files) {
 		var csvlength = files.toString().match(/csv/g).length;
 		console.log(csvlength);
 		if (err) throw err;
 		if (csvlength <= 9) {
-			client.filePath = '/home/pi/METanalytics/cap/' + client.filename + '-0' + csvlength + '.csv';
-			console.log('file path: ' + client.filePath);
-			client.processCSV(client.filePath);
+			raspi.filePath = '/home/pi/METanalytics/cap/' + raspi.filename + '-0' + csvlength + '.csv';
+			console.log('file path: ' + raspi.filePath);
+			raspi.processCSV(raspi.filePath);
 		} else {
-			client.filePath = '/home/pi/METanalytics/cap/' + client.filename + '-' + csvlength + '.csv';
-			console.log('file path: ' + client.filePath);
+			raspi.filePath = '/home/pi/METanalytics/cap/' + raspi.filename + '-' + csvlength + '.csv';
+			console.log('file path: ' + raspi.filePath);
 			// if(tmpUser.length > 0) { // start watching when has user register
-			client.processCSV(client.filePath);
+			raspi.processCSV(raspi.filePath);
 		}
 	});
 };
 
-client.processCSV = function(path) {
+raspi.processCSV = function(path) {
 	console.log('Monitoring ' + path.green.bold);
 	// starting clock
 	var clock = setInterval(function() {
@@ -84,15 +60,15 @@ client.processCSV = function(path) {
 			var data = buffer.toString();
 			socket.sendMessage({
 				command: 'everyminute',
-				id: client.id,
+				id: raspi.id,
 				timestamp: moment().unix(),
-				devArray: client.deviceData(data)
+				devArray: raspi.deviceData(data)
 			});
 		});
 	}
 };
 
-client.deviceData = function(data) {
+raspi.deviceData = function(data) {
 	// check lastseen > unix now - offset
 	var tmp = data.substring(data.indexOf('ESSIDs') + 8, data.length),
 		tmpDevArray = tmp.match(/[^ ]\w\w[:]\w\w[:]\w\w[:]\w\w[:]\w\w[:]\w\w/g), // [^ ] = not space
@@ -100,33 +76,59 @@ client.deviceData = function(data) {
 		devArray = [];
 
 	// STRIP each devArray
-	for(var i = 0; i < tmpDevArray.length; i++) {
+	for (var i = 0; i < tmpDevArray.length; i++) {
 		devArray.push({
 			mac: tmpDevArray[i].substring(1),
-			vendor: client.macToVendor(tmpDevArray[i].substring(1)),
-			firstSeen: moment(tmpSeenArray[i*2]).unix(),
-			lastSeen: moment(tmpSeenArray[i*2 + 1]).unix()
+			vendor: raspi.macToVendor(tmpDevArray[i].substring(1)),
+			firstSeen: moment(tmpSeenArray[i * 2]).unix(),
+			lastSeen: moment(tmpSeenArray[i * 2 + 1]).unix()
 		});
 	}
 	return devArray;
 };
 
-client.macToVendor = function(mac) {
+raspi.macToVendor = function(mac) {
 	return true;
 };
 
-client.countAllRouter = function(data) {
+raspi.countAllRouter = function(data) {
 	var tmp = data.substring(data.indexOf('key') + 5, data.indexOf('ESSIDs') - 5);
 	return tmp.match(/\n/g).length - 2;
 };
 
-client.countAllOnlineDevice = function(data) {
+raspi.countAllOnlineDevice = function(data) {
 	var tmp = data.substring(data.indexOf('ESSIDs') + 8, data.length);
 	return tmp.match(/\n/g).length - 1;
 };
 
-client.normalize = function() {
+raspi.normalize = function() {
 
 };
 
-client.init();
+socket.on('connect', function() {
+	// remove timeout
+	clearInterval(timeout);
+	console.log('connected to ' + host + ':' + port);
+	socket.sendMessage({
+		command: 'time',
+		time: moment().format('MMMM Do YYYY, h:mm:ss a')
+	}, function() {
+		console.log('............. sending time to server');
+	});
+	raspi.start();
+});
+
+socket.on('error', function(err) {
+	console.log(err);
+	// reconnect
+	raspi.reconnect();
+});
+
+socket.on('end', function() {
+	console.log('connection dropped');
+	clearInterval(timeout);
+	// when disconnect, set a 5 seconds interval
+	raspi.reconnect();
+});
+
+raspi.connect();
