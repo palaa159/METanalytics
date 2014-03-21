@@ -22,12 +22,6 @@ raspi.connect = function() {
 	socket.connect(port, host);
 };
 
-raspi.reconnect = function() {
-	timeout = setInterval(function() {
-		raspi.connect();
-	}, 2 * 60 * 1000);
-};
-
 raspi.start = function() {
 
 	fs.readdir('/home/pi/METanalytics/cap', function(err, files) {
@@ -50,12 +44,8 @@ raspi.start = function() {
 raspi.processCSV = function(path) {
 	console.log('Monitoring ' + path.green.bold);
 	// starting clock
-	clock = setInterval(function() {
-		if (moment().format('ss') == '00') {
-			console.log('sendData at ' + moment().format('h:mm:ss a'));
-			sendData();
-		}
-	}, 1000);
+	console.log('sendData at ' + moment().format('h:mm:ss a'));
+	sendData();
 
 	function sendData() {
 		fs.readFile(path, function(err, buffer) {
@@ -125,14 +115,6 @@ socket.on('connect', function() {
 socket.on('error', function(err) {
 	console.log(err);
 	// reconnect
-	raspi.reconnect();
-});
-
-socket.on('end', function() {
-	console.log('connection dropped');
-	clearInterval(timeout);
-	// when disconnect, set a 5 seconds interval
-	raspi.reconnect();
 });
 
 raspi.connect();
