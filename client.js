@@ -17,9 +17,6 @@ raspi.id = 'METLab';
 raspi.filename = 'test';
 
 raspi.connect = function() {
-	socket.destroy(function() {
-		console.log('socket destroyed');
-	});
 	console.log('connecting to ' + host + ':' + port);
 	socket.connect(port, host);
 };
