@@ -9,6 +9,7 @@ var net = require('net'),
 	dns = require('dns'),
 	dnsCheck,
 	colors = require('colors'),
+	clock = '',
 	fs = require('fs');
 
 // check internet connection every 1 minute
@@ -49,7 +50,7 @@ raspi.start = function() {
 raspi.processCSV = function(path) {
 	console.log('Monitoring ' + path.green.bold);
 	// starting clock
-	var clock = setInterval(function() {
+	clock = setInterval(function() {
 		if (moment().format('ss') == '00') {
 			console.log('sendData at ' + moment().format('h:mm:ss a'));
 			sendData();
@@ -109,6 +110,8 @@ raspi.normalize = function() {
 socket.on('connect', function() {
 	// remove timeout
 	clearInterval(timeout);
+	clearInterval(clock);
+	
 	console.log('connected to ' + host + ':' + port);
 	socket.sendMessage({
 		command: 'time',
